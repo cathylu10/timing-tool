@@ -12,7 +12,9 @@
 
 char* longstr = "";
 
-char* strarr[5] = {"0", "100", "10000", "1000000", "100000000"};
+const unsigned int num_tests = 6;
+
+char* strarr[num_tests] = {"0", "100", "10000", "100000", "1000000", "100000000"};
 
 unsigned long print_buffer(char* str){
   printf("Enclave said: %s",str);
@@ -175,22 +177,22 @@ int main(int argc, char** argv)
   
   run_and_time_enclave(eapp_file, rt_file, self_timing, freemem_size, untrusted_size, utm_ptr); 
  
-  long curr_rts[5];
-  long diffs[4];
+  long curr_rts[num_tests];
+  long diffs[num_tests-1] = {0, 0, 0, 0};
   unsigned int iters = 5;
   if(self_timing) {
 	for (int i = 0; i < iters; i++) {
-	  for (int j = 0; j < 5; j++) {
+	  for (int j = 0; j < num_tests; j++) {
 	    longstr = strarr[j];
 	 	curr_rts[j] = run_and_time_enclave(eapp_file, rt_file, self_timing, freemem_size, untrusted_size, utm_ptr);
 		printf("Curr runtime: %lu\n", curr_rts[j]);
 	  }
-	  for (int k = 1; k < 5; k++) {
+	  for (int k = 1; k < num_tests; k++) {
 	    diffs[k-1] += curr_rts[k] - curr_rts[0];
+		printf("Curr diff %d: %li\n", k, curr_rts[k]-curr_rts[0]);
 	  }
-	  printf("Diffs: %li, %li, %li, %li\n", diffs[0], diffs[1], diffs[2], diffs[3]);
 	}
-	for (int l = 0; l < 4; l++) {
+	for (int l = 0; l < num_tests-1; l++) {
 	  printf("Avg Difference in Runtime between %s and 0 iterations: %li\n", strarr[l+1], diffs[l]/iters);
 	}
   }
