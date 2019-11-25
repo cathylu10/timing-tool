@@ -80,6 +80,7 @@ unsigned long run_and_time_enclave(char *eapp_file, char *rt_file, int self_timi
     asm volatile ("rdcycle %0" : "=r" (cycles2));
   }
 
+  enclave.destroy();
 
   if( self_timing ){
     return cycles2-cycles1;
@@ -142,59 +143,28 @@ int main(int argc, char** argv)
     }
   }
 
-//  Keystone enclave;
-//  Params params;
-//  unsigned long cycles1,cycles2,cycles3,cycles4;
-//
-//  params.setFreeMemSize(freemem_size);
-//  params.setUntrustedMem(utm_ptr, untrusted_size);
-//
-//
-//  if( self_timing ){
-//    asm volatile ("rdcycle %0" : "=r" (cycles1));
+  for (int i = 0; i < 100; i++) {
+    run_and_time_enclave(eapp_file, rt_file, self_timing, freemem_size, untrusted_size, utm_ptr); 
+  	printf("Num iterations: %d\n", i);
+  } 
+//  long curr_rts[num_tests];
+//  long diffs[num_tests-1] = {0, 0, 0, 0};
+//  unsigned int iters = 5;
+//  if(self_timing) {
+//	for (int i = 0; i < iters; i++) {
+//	  for (int j = 0; j < num_tests; j++) {
+//	    longstr = strarr[j];
+//	 	curr_rts[j] = run_and_time_enclave(eapp_file, rt_file, self_timing, freemem_size, untrusted_size, utm_ptr);
+//		printf("Curr runtime: %lu\n", curr_rts[j]);
+//	  }
+//	  for (int k = 1; k < num_tests; k++) {
+//	    diffs[k-1] += curr_rts[k] - curr_rts[0];
+//		printf("Curr diff %d: %li\n", k, curr_rts[k]-curr_rts[0]);
+//	  }
+//	}
+//	for (int l = 0; l < num_tests-1; l++) {
+//	  printf("Avg Difference in Runtime between %s and 0 iterations: %li\n", strarr[l+1], diffs[l]/iters);
+//	}
 //  }
-//
-//  enclave.init(eapp_file, rt_file , params);
-//
-//  if( self_timing ){
-//    asm volatile ("rdcycle %0" : "=r" (cycles2));
-//  }
-//
-//  edge_init(&enclave);
-//
-//  if( self_timing ){
-//    asm volatile ("rdcycle %0" : "=r" (cycles3));
-//  }
-//
-//  if( !load_only )
-//    enclave.run();
-//
-//  if( self_timing ){
-//    asm volatile ("rdcycle %0" : "=r" (cycles4));
-//    printf("[keystone-test] Init: %lu cycles\r\n", cycles2-cycles1);
-//    printf("[keystone-test] Runtime: %lu cycles\r\n", cycles4-cycles3);
-//  }
-  
-  run_and_time_enclave(eapp_file, rt_file, self_timing, freemem_size, untrusted_size, utm_ptr); 
- 
-  long curr_rts[num_tests];
-  long diffs[num_tests-1] = {0, 0, 0, 0};
-  unsigned int iters = 5;
-  if(self_timing) {
-	for (int i = 0; i < iters; i++) {
-	  for (int j = 0; j < num_tests; j++) {
-	    longstr = strarr[j];
-	 	curr_rts[j] = run_and_time_enclave(eapp_file, rt_file, self_timing, freemem_size, untrusted_size, utm_ptr);
-		printf("Curr runtime: %lu\n", curr_rts[j]);
-	  }
-	  for (int k = 1; k < num_tests; k++) {
-	    diffs[k-1] += curr_rts[k] - curr_rts[0];
-		printf("Curr diff %d: %li\n", k, curr_rts[k]-curr_rts[0]);
-	  }
-	}
-	for (int l = 0; l < num_tests-1; l++) {
-	  printf("Avg Difference in Runtime between %s and 0 iterations: %li\n", strarr[l+1], diffs[l]/iters);
-	}
-  }
   return 0;
 }
