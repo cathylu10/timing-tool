@@ -27,10 +27,17 @@ void EAPP_ENTRY eapp_entry(){
   void* host_str = malloc(pkgstr.size);
   copy_from_shared(host_str, pkgstr.offset, pkgstr.size);
 
+  char* msg = "Fail to malloc\n";
+  char* msg2 = "Finished\n";
+
   int val = atoi(host_str);
   ocall_print_value(val);
-  for (int i = 0; i < val; i++);
+  for (int i = 0; i < val; i++) {
+    if (malloc(100) == NULL)
+	  ocall_print_buffer(msg, 16);
+  }
 
+  ocall_print_buffer(msg2, 10);
 
   EAPP_RETURN(3);
 }
