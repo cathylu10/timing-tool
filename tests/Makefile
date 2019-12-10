@@ -26,8 +26,12 @@ all:  $(OBJS) $(SDK_HOST_LIB) $(SDK_EDGE_LIB) $(SDK_VERIFIER_LIB)
 	)
 	rm -f test
 	$(foreach test, $(TESTS), \
-		echo "echo 'testing $(test)'" >> test;\
-		echo "./$(RUNNER) $(test).eapp_riscv $(RUNTIME) --time" >> test; \
+		COUNTER=0
+		while [ $COUNTER -lt 10 ]; do 
+			echo "echo 'testing $(test), iteration $(COUNTER)'" >> test;\
+			echo "./$(RUNNER) $(test).eapp_riscv $(RUNTIME) --time >> $(test).output" >> test; \
+			let COUNTER=COUNTER+1
+		done
 	)
 	chmod +x test
 

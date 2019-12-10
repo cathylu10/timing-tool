@@ -9,7 +9,7 @@ VAULT_DIR=$(cd `dirname $0` && pwd)
 BUILD_COMMAND=make
 OUTPUT_DIR=$VAULT_DIR/../../buildroot_overlay/root/$NAME
 EYRIE_DIR=$KEYSTONE_SDK_DIR/rts/eyrie
-EYRIE_PLUGINS="freemem env_setup linux_syscall"
+EYRIE_PLUGINS="freemem env_setup linux_syscall untrusted_io_syscall"
 PACKAGE_FILES="untrusted/untrusted.eapp_riscv \
                malloc_timing/malloc_timing.eapp_riscv \
                test-runner.riscv \
